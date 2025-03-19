@@ -44,7 +44,7 @@ const COUNTRIES = [
   { code: "KR", name: "South Korea" }
 ];
 
-const ACTION_AREAS = [
+const KPI_OPTIONS = [
   "Installation Flux (AB Test)",
   "Conversion Rate",
   "Visibility",
@@ -55,7 +55,7 @@ const ACTION_AREAS = [
   "Updates"
 ];
 
-const APP_SECTIONS = [
+const OPTIMIZATION_OPTIONS = [
   "Long description",
   "Title",
   "Promotional text",
@@ -96,11 +96,11 @@ const InitialForm: React.FC<InitialFormProps> = ({ onSubmit, isSubmitting }) => 
     }
     
     if (!formData.actionArea) {
-      newErrors.actionArea = 'Action area is required';
+      newErrors.actionArea = 'KPI selection is required';
     }
     
     if (!formData.appSection) {
-      newErrors.appSection = 'App section is required';
+      newErrors.appSection = 'Optimization selection is required';
     }
     
     if (!formData.instructions.trim()) {
@@ -214,16 +214,16 @@ const InitialForm: React.FC<InitialFormProps> = ({ onSubmit, isSubmitting }) => 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2 animate-fade-in">
               <Label htmlFor="actionArea" className="text-sm font-medium">
-                Action Area
+                Choose KPI
               </Label>
               <Select value={formData.actionArea} onValueChange={(value) => handleChange(value, 'actionArea')}>
                 <SelectTrigger id="actionArea" className={`h-11 focus-ring ${errors.actionArea ? 'border-destructive' : ''}`}>
-                  <SelectValue placeholder="Select action area" />
+                  <SelectValue placeholder="Select KPI" />
                 </SelectTrigger>
                 <SelectContent>
-                  {ACTION_AREAS.map((area) => (
-                    <SelectItem key={area.replace(/\s+/g, '-').toLowerCase()} value={area}>
-                      {area}
+                  {KPI_OPTIONS.map((kpi) => (
+                    <SelectItem key={kpi.replace(/\s+/g, '-').toLowerCase()} value={kpi}>
+                      {kpi}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -233,16 +233,16 @@ const InitialForm: React.FC<InitialFormProps> = ({ onSubmit, isSubmitting }) => 
 
             <div className="space-y-2 animate-fade-in">
               <Label htmlFor="appSection" className="text-sm font-medium">
-                App Section
+                Choose an Optimization
               </Label>
               <Select value={formData.appSection} onValueChange={(value) => handleChange(value, 'appSection')}>
                 <SelectTrigger id="appSection" className={`h-11 focus-ring ${errors.appSection ? 'border-destructive' : ''}`}>
-                  <SelectValue placeholder="Select app section" />
+                  <SelectValue placeholder="Select optimization area" />
                 </SelectTrigger>
                 <SelectContent>
-                  {APP_SECTIONS.map((section) => (
-                    <SelectItem key={section.replace(/\s+/g, '-').toLowerCase()} value={section}>
-                      {section}
+                  {OPTIMIZATION_OPTIONS.map((option) => (
+                    <SelectItem key={option.replace(/\s+/g, '-').toLowerCase()} value={option}>
+                      {option}
                     </SelectItem>
                   ))}
                 </SelectContent>
