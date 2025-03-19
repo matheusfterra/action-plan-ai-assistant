@@ -210,9 +210,10 @@ const Index = () => {
           <OutputSection 
             outputs={outputs} 
             isActive={initialSubmitted}
+            showAfterAdditionalSubmit={additionalSubmitted}
           />
           
-          {(initialSubmitted && !showFeedbackForm) && (
+          {(initialSubmitted && additionalSubmitted && !showFeedbackForm) && (
             <ApprovalSection 
               onApprove={handleApprove} 
               onEdit={handleEdit} 

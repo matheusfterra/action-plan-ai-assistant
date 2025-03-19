@@ -17,13 +17,18 @@ interface OutputSectionProps {
     strategy: string;
   } | null;
   isActive: boolean;
+  showAfterAdditionalSubmit: boolean;
 }
 
-const OutputSection: React.FC<OutputSectionProps> = ({ outputs, isActive }) => {
+const OutputSection: React.FC<OutputSectionProps> = ({ 
+  outputs, 
+  isActive,
+  showAfterAdditionalSubmit 
+}) => {
   const { toast } = useToast();
   const [copied, setCopied] = useState<Record<string, boolean>>({});
 
-  if (!isActive || !outputs) return null;
+  if (!isActive || !outputs || !showAfterAdditionalSubmit) return null;
 
   const outputItems: OutputItem[] = [
     { title: 'Suggested Text', content: outputs.suggestedText },
