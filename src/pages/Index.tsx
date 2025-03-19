@@ -48,6 +48,9 @@ const Index = () => {
   const handleInitialSubmit = async (data: InitialFormData) => {
     setIsInitialSubmitting(true);
     try {
+      // Log the form data to see new fields
+      console.log("Form data submitted:", data);
+      
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
       

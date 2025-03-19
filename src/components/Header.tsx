@@ -9,7 +9,7 @@ const Header = () => {
         <div className="flex items-center space-x-2 animate-fade-in">
           <Sparkles className="h-6 w-6 text-primary" />
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground tracking-tight">
-            AI Suggestion Assistant
+            Action Plan AI Assistant
           </h1>
         </div>
       </div>

@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronDown, Check } from 'lucide-react';
 
 interface InitialFormProps {
   onSubmit: (data: InitialFormData) => void;
@@ -17,6 +16,8 @@ export interface InitialFormData {
   store: string;
   language: string;
   countryCode: string;
+  appSection: string;
+  actionArea: string;
   instructions: string;
 }
 
@@ -25,12 +26,51 @@ const SUPPORTED_LANGUAGES = [
   "Portuguese", "Russian", "Japanese", "Korean", "Chinese"
 ];
 
+const COUNTRIES = [
+  { code: "US", name: "United States" },
+  { code: "GB", name: "United Kingdom" },
+  { code: "CA", name: "Canada" },
+  { code: "AU", name: "Australia" },
+  { code: "DE", name: "Germany" },
+  { code: "FR", name: "France" },
+  { code: "JP", name: "Japan" },
+  { code: "BR", name: "Brazil" },
+  { code: "ES", name: "Spain" },
+  { code: "IT", name: "Italy" },
+  { code: "MX", name: "Mexico" },
+  { code: "IN", name: "India" },
+  { code: "RU", name: "Russia" },
+  { code: "CN", name: "China" },
+  { code: "KR", name: "South Korea" }
+];
+
+const ACTION_AREAS = [
+  "Installation Flux (AB Test)",
+  "Conversion Rate",
+  "Visibility",
+  "App's Page Maintenance",
+  "Impressions",
+  "Keyword Ranking",
+  "Downloads (returning users)",
+  "Updates"
+];
+
+const APP_SECTIONS = [
+  "Long description",
+  "Title",
+  "Promotional text",
+  "Subtitle",
+  "Keyword field"
+];
+
 const InitialForm: React.FC<InitialFormProps> = ({ onSubmit, isSubmitting }) => {
   const [formData, setFormData] = useState<InitialFormData>({
     appId: '',
     store: '',
     language: '',
     countryCode: '',
+    appSection: '',
+    actionArea: '',
     instructions: ''
   });
 
@@ -51,10 +91,16 @@ const InitialForm: React.FC<InitialFormProps> = ({ onSubmit, isSubmitting }) => 
       newErrors.language = 'Language selection is required';
     }
     
-    if (!formData.countryCode.trim()) {
+    if (!formData.countryCode) {
       newErrors.countryCode = 'Country code is required';
-    } else if (!/^[A-Z]{2}$/.test(formData.countryCode)) {
-      newErrors.countryCode = 'Country code must be 2 uppercase letters';
+    }
+    
+    if (!formData.actionArea) {
+      newErrors.actionArea = 'Action area is required';
+    }
+    
+    if (!formData.appSection) {
+      newErrors.appSection = 'App section is required';
     }
     
     if (!formData.instructions.trim()) {
@@ -147,17 +193,61 @@ const InitialForm: React.FC<InitialFormProps> = ({ onSubmit, isSubmitting }) => 
 
             <div className="space-y-2 animate-fade-in">
               <Label htmlFor="countryCode" className="text-sm font-medium">
-                Country Code
+                Country
               </Label>
-              <Input
-                id="countryCode"
-                placeholder="Two-letter code (e.g. US, GB)"
-                value={formData.countryCode}
-                onChange={(e) => handleChange(e, 'countryCode')}
-                className={`h-11 focus-ring uppercase ${errors.countryCode ? 'border-destructive' : ''}`}
-                maxLength={2}
-              />
+              <Select value={formData.countryCode} onValueChange={(value) => handleChange(value, 'countryCode')}>
+                <SelectTrigger id="countryCode" className={`h-11 focus-ring ${errors.countryCode ? 'border-destructive' : ''}`}>
+                  <SelectValue placeholder="Select country" />
+                </SelectTrigger>
+                <SelectContent>
+                  {COUNTRIES.map((country) => (
+                    <SelectItem key={country.code} value={country.code}>
+                      {country.name} ({country.code})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               {errors.countryCode && <p className="text-sm text-destructive">{errors.countryCode}</p>}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2 animate-fade-in">
+              <Label htmlFor="actionArea" className="text-sm font-medium">
+                Action Area
+              </Label>
+              <Select value={formData.actionArea} onValueChange={(value) => handleChange(value, 'actionArea')}>
+                <SelectTrigger id="actionArea" className={`h-11 focus-ring ${errors.actionArea ? 'border-destructive' : ''}`}>
+                  <SelectValue placeholder="Select action area" />
+                </SelectTrigger>
+                <SelectContent>
+                  {ACTION_AREAS.map((area) => (
+                    <SelectItem key={area.replace(/\s+/g, '-').toLowerCase()} value={area}>
+                      {area}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors.actionArea && <p className="text-sm text-destructive">{errors.actionArea}</p>}
+            </div>
+
+            <div className="space-y-2 animate-fade-in">
+              <Label htmlFor="appSection" className="text-sm font-medium">
+                App Section
+              </Label>
+              <Select value={formData.appSection} onValueChange={(value) => handleChange(value, 'appSection')}>
+                <SelectTrigger id="appSection" className={`h-11 focus-ring ${errors.appSection ? 'border-destructive' : ''}`}>
+                  <SelectValue placeholder="Select app section" />
+                </SelectTrigger>
+                <SelectContent>
+                  {APP_SECTIONS.map((section) => (
+                    <SelectItem key={section.replace(/\s+/g, '-').toLowerCase()} value={section}>
+                      {section}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors.appSection && <p className="text-sm text-destructive">{errors.appSection}</p>}
             </div>
           </div>
 
@@ -167,7 +257,7 @@ const InitialForm: React.FC<InitialFormProps> = ({ onSubmit, isSubmitting }) => 
             </Label>
             <Textarea
               id="instructions"
-              placeholder="Provide detailed instructions for what you're looking to generate..."
+              placeholder="Describe your objective, intention or strategy with the action plan"
               value={formData.instructions}
               onChange={(e) => handleChange(e, 'instructions')}
               className={`min-h-[150px] resize-y focus-ring ${errors.instructions ? 'border-destructive' : ''}`}
