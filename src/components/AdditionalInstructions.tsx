@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Info } from 'lucide-react';
+import { Info, AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface AdditionalInstructionsProps {
   onSubmit: (instructions: string) => void;
@@ -39,6 +40,25 @@ const AdditionalInstructions: React.FC<AdditionalInstructionsProps> = ({
   return (
     <div className="w-full mb-10 animate-slide-in">
       <div className="bg-white rounded-xl p-6 shadow-sm border border-border">
+        <Alert className="mb-6 bg-amber-50 border-amber-200">
+          <AlertCircle className="h-4 w-4 text-amber-600" />
+          <AlertDescription className="text-amber-800">
+            <p className="font-medium mb-1">API Analysis Guidance</p>
+            <p className="text-sm">
+              Based on our analysis of your KPI goals, we recommend focusing on the following aspects in your optimization strategy:
+            </p>
+            <ul className="list-disc pl-5 mt-2 text-sm space-y-1">
+              <li>Consider adjusting your keyword strategy to target more specific user intents</li>
+              <li>Highlight unique features that differentiate your app from competitors</li>
+              <li>Address user pain points mentioned in recent reviews</li>
+              <li>Optimize for regional preferences in your target markets</li>
+            </ul>
+            <p className="text-sm mt-2">
+              Please incorporate these suggestions in your additional instructions below.
+            </p>
+          </AlertDescription>
+        </Alert>
+        
         <div className="mb-5 flex gap-2 items-start">
           <Info className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
           <p className="text-sm text-muted-foreground">
