@@ -149,8 +149,8 @@ const Index = () => {
   // Handle approve action
   const handleApprove = () => {
     toast({
-      title: "Approved!",
-      description: "The suggestion has been approved successfully.",
+      title: "Conteúdo Aprovado!",
+      description: "A sugestão foi aprovada com sucesso. Retornando ao início...",
     });
     
     // Reset app state for demonstration purposes
@@ -169,8 +169,8 @@ const Index = () => {
     // If at max feedback count, this is a rejection
     if (feedbackCount >= MAX_FEEDBACK_COUNT) {
       toast({
-        title: "Rejected",
-        description: "The suggestion has been rejected.",
+        title: "Rejeitado",
+        description: "A sugestão foi rejeitada.",
         variant: "destructive",
       });
       
