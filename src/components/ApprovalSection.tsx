@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Check, Edit, ThumbsUp, ThumbsDown, Copy, AlertCircle } from 'lucide-react';
+import { Check, Edit, ThumbsUp, ThumbsDown, AlertCircle } from 'lucide-react';
 import { 
   AlertDialog,
   AlertDialogAction,
@@ -122,16 +122,6 @@ const ApprovalSection: React.FC<ApprovalSectionProps> = ({
                 </div>
               </AlertDialogDescription>
             </AlertDialogHeader>
-            <div className="mb-5">
-              <Button 
-                variant="outline" 
-                className="w-full justify-start border-dashed"
-                onClick={handleCopyContent}
-              >
-                <Copy className="mr-2 h-4 w-4" />
-                Copiar conteúdo para a área de transferência
-              </Button>
-            </div>
             <AlertDialogFooter>
               <AlertDialogCancel className="sm:mr-2">
                 Fechar
