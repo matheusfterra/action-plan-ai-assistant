@@ -1,8 +1,18 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Check, Edit, ThumbsUp, ThumbsDown, Copy, AlertCircle } from 'lucide-react';
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from "@/hooks/use-toast";
 
 interface ApprovalSectionProps {
   onApprove: () => void;
@@ -19,6 +29,8 @@ const ApprovalSection: React.FC<ApprovalSectionProps> = ({
   feedbackCount,
   maxFeedbackCount
 }) => {
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  
   if (!isActive) return null;
 
   const isLastFeedback = feedbackCount >= maxFeedbackCount;
@@ -35,11 +47,18 @@ const ApprovalSection: React.FC<ApprovalSectionProps> = ({
     // Copy to clipboard
     navigator.clipboard.writeText(contentToCopy)
       .then(() => {
-        // You can use the toast here if needed
-        console.log('Content copied to clipboard');
+        toast({
+          title: "Conteúdo copiado!",
+          description: "O texto foi copiado para a área de transferência."
+        });
       })
       .catch(err => {
         console.error('Failed to copy content: ', err);
+        toast({
+          title: "Erro ao copiar",
+          description: "Não foi possível copiar o conteúdo. Tente selecionar manualmente.",
+          variant: "destructive"
+        });
       });
   };
 
@@ -67,54 +86,14 @@ const ApprovalSection: React.FC<ApprovalSectionProps> = ({
           </>
         ) : (
           <>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button 
-                  variant="default" 
-                  className="h-11 min-w-[160px] transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
-                >
-                  <ThumbsUp className="h-5 w-5 mr-2" />
-                  Approve
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-80 p-0">
-                <div className="grid gap-4 p-4">
-                  <div className="space-y-2">
-                    <h4 className="font-medium leading-none flex items-center gap-2 text-amber-600">
-                      <AlertCircle className="h-4 w-4" />
-                      Atenção
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      Você já salvou ou copiou o conteúdo gerado? 
-                      Ao aprovar, a página será reiniciada e o conteúdo atual será perdido.
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-2 pt-2">
-                    <Button 
-                      variant="outline" 
-                      className="justify-start border-dashed"
-                      onClick={handleCopyContent}
-                    >
-                      <Copy className="mr-2 h-4 w-4" />
-                      Copiar conteúdo para a área de transferência
-                    </Button>
-                    <Button 
-                      onClick={onApprove}
-                      className="mt-2"
-                    >
-                      Sim, continuar e reiniciar
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      onClick={() => {}}
-                      className="mt-1"
-                    >
-                      Cancelar
-                    </Button>
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
+            <Button 
+              onClick={() => setIsConfirmOpen(true)} 
+              variant="default" 
+              className="h-11 min-w-[160px] transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <ThumbsUp className="h-5 w-5 mr-2" />
+              Approve
+            </Button>
             <Button 
               onClick={onEdit} 
               variant="outline" 
@@ -123,6 +102,47 @@ const ApprovalSection: React.FC<ApprovalSectionProps> = ({
               <ThumbsDown className="h-5 w-5 mr-2" />
               Reject
             </Button>
+
+            <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
+              <AlertDialogContent className="max-w-md">
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="flex items-center gap-2 text-primary">
+                    <Check className="h-5 w-5" />
+                    Confirmar Aprovação
+                  </AlertDialogTitle>
+                  <AlertDialogDescription className="pt-2">
+                    <div className="mb-4 p-3 rounded-md bg-amber-50 border border-amber-200 flex items-start gap-2">
+                      <AlertCircle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
+                      <p className="text-amber-800 text-sm">
+                        Antes de aprovar, certifique-se de que você salvou ou copiou todas as sugestões geradas.
+                        Após a aprovação, a página será reiniciada e todo o trabalho não salvo será perdido.
+                      </p>
+                    </div>
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <div className="mb-5">
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start border-dashed"
+                    onClick={handleCopyContent}
+                  >
+                    <Copy className="mr-2 h-4 w-4" />
+                    Copiar conteúdo para a área de transferência
+                  </Button>
+                </div>
+                <AlertDialogFooter>
+                  <AlertDialogCancel className="sm:mr-2">
+                    Fechar
+                  </AlertDialogCancel>
+                  <AlertDialogAction 
+                    onClick={onApprove}
+                    className="bg-primary hover:bg-primary/90"
+                  >
+                    Já copiei tudo, continuar
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </>
         )}
       </div>
