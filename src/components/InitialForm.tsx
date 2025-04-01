@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface InitialFormProps {
   onSubmit: (data: InitialFormData) => void;
@@ -19,6 +20,7 @@ export interface InitialFormData {
   appSection: string;
   actionArea: string;
   instructions: string;
+  suggestKeywords: boolean;
 }
 
 const SUPPORTED_LANGUAGES = [
@@ -71,7 +73,8 @@ const InitialForm: React.FC<InitialFormProps> = ({ onSubmit, isSubmitting }) => 
     countryCode: '',
     appSection: '',
     actionArea: '',
-    instructions: ''
+    instructions: '',
+    suggestKeywords: false
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -128,6 +131,10 @@ const InitialForm: React.FC<InitialFormProps> = ({ onSubmit, isSubmitting }) => 
         setErrors(prev => ({ ...prev, [field]: '' }));
       }
     }
+  };
+
+  const handleCheckboxChange = (checked: boolean) => {
+    setFormData(prev => ({ ...prev, suggestKeywords: checked }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -249,6 +256,20 @@ const InitialForm: React.FC<InitialFormProps> = ({ onSubmit, isSubmitting }) => 
               </Select>
               {errors.appSection && <p className="text-sm text-destructive">{errors.appSection}</p>}
             </div>
+          </div>
+
+          <div className="flex items-center space-x-2 animate-fade-in">
+            <Checkbox 
+              id="suggestKeywords" 
+              checked={formData.suggestKeywords} 
+              onCheckedChange={handleCheckboxChange} 
+            />
+            <Label 
+              htmlFor="suggestKeywords" 
+              className="text-sm font-medium cursor-pointer"
+            >
+              Sugerir keywords para otimização
+            </Label>
           </div>
 
           <div className="space-y-2 animate-fade-in">

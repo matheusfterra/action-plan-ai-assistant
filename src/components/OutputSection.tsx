@@ -40,6 +40,7 @@ interface OutputSectionProps {
   } | null;
   isActive: boolean;
   showAfterAdditionalSubmit: boolean;
+  showKeywords?: boolean; // New prop to control keyword tables visibility
 }
 
 // Sample data for the tables
@@ -64,7 +65,8 @@ const competitors = ["Uber: Ride App", "Lyft", "DiDi", "Bolt", "FreeNow"];
 const OutputSection: React.FC<OutputSectionProps> = ({ 
   outputs, 
   isActive,
-  showAfterAdditionalSubmit 
+  showAfterAdditionalSubmit,
+  showKeywords = false // Default to false if not provided
 }) => {
   const { toast } = useToast();
   const [copied, setCopied] = useState<Record<string, boolean>>({});
@@ -184,173 +186,179 @@ const OutputSection: React.FC<OutputSectionProps> = ({
                 value={item.content}
                 readOnly
                 className="min-h-[120px] resize-none bg-secondary focus-ring font-mono text-sm"
+                data-section={item.title.toLowerCase().replace(/\s+/g, '')}
               />
             </div>
           ))}
           
-          {/* Optimized Keywords Table */}
-          <div className="pt-4 border-t border-border animate-fade-in">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium">Optimized Keywords</h3>
-              <button
-                type="button"
-                onClick={() => copyToClipboard(JSON.stringify(sampleKeywords, null, 2), "Keyword Data")}
-                className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors p-1 rounded focus-ring"
-                aria-label="Copy Keyword Data"
-              >
-                <Copy className="h-4 w-4" />
-                Export Data
-              </button>
-            </div>
-            
-            <div className="overflow-x-auto">
-              <Table>
-                <TableCaption>Analysis of keyword performance and optimization goals</TableCaption>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead onClick={() => requestSort('keyword')} className="cursor-pointer hover:bg-muted transition-colors">
-                      <div className="flex items-center gap-1">
-                        Keyword
-                        <Tooltip>
-                          <TooltipTrigger><Info className="h-3.5 w-3.5 text-muted-foreground" /></TooltipTrigger>
-                          <TooltipContent>The target search term for optimization</TooltipContent>
-                        </Tooltip>
-                      </div>
-                    </TableHead>
-                    <TableHead onClick={() => requestSort('density')} className="cursor-pointer hover:bg-muted transition-colors">
-                      <div className="flex items-center gap-1">
-                        Density
-                        <Tooltip>
-                          <TooltipTrigger><Info className="h-3.5 w-3.5 text-muted-foreground" /></TooltipTrigger>
-                          <TooltipContent>Frequency of keyword appearance in app metadata</TooltipContent>
-                        </Tooltip>
-                      </div>
-                    </TableHead>
-                    <TableHead onClick={() => requestSort('relevance')} className="cursor-pointer hover:bg-muted transition-colors">
-                      <div className="flex items-center gap-1">
-                        Relevance
-                        <Tooltip>
-                          <TooltipTrigger><Info className="h-3.5 w-3.5 text-muted-foreground" /></TooltipTrigger>
-                          <TooltipContent>Assessed importance to target audience</TooltipContent>
-                        </Tooltip>
-                      </div>
-                    </TableHead>
-                    <TableHead className="cursor-pointer hover:bg-muted transition-colors">
-                      <div className="flex items-center gap-1">
-                        Classification (Before)
-                        <Tooltip>
-                          <TooltipTrigger><Info className="h-3.5 w-3.5 text-muted-foreground" /></TooltipTrigger>
-                          <TooltipContent>Current ranking position</TooltipContent>
-                        </Tooltip>
-                      </div>
-                    </TableHead>
-                    <TableHead className="cursor-pointer hover:bg-muted transition-colors">
-                      <div className="flex items-center gap-1">
-                        Classification (After)
-                        <Tooltip>
-                          <TooltipTrigger><Info className="h-3.5 w-3.5 text-muted-foreground" /></TooltipTrigger>
-                          <TooltipContent>Projected ranking after optimization</TooltipContent>
-                        </Tooltip>
-                      </div>
-                    </TableHead>
-                    <TableHead onClick={() => requestSort('goal')} className="cursor-pointer hover:bg-muted transition-colors">
-                      <div className="flex items-center gap-1">
-                        Goal
-                        <Tooltip>
-                          <TooltipTrigger><Info className="h-3.5 w-3.5 text-muted-foreground" /></TooltipTrigger>
-                          <TooltipContent>Specific objective for this keyword</TooltipContent>
-                        </Tooltip>
-                      </div>
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {sortedKeywords.map((keyword, index) => (
-                    <TableRow key={index} className={index % 2 === 0 ? 'bg-background' : 'bg-muted/20'}>
-                      <TableCell className="font-medium">{keyword.keyword}</TableCell>
-                      <TableCell>{keyword.density}</TableCell>
-                      <TableCell>
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getRelevanceColor(keyword.relevance)}`}>
-                          {keyword.relevance}
-                        </span>
-                      </TableCell>
-                      <TableCell>{keyword.classificationBefore}</TableCell>
-                      <TableCell className="flex items-center gap-1">
-                        {keyword.classificationAfter}
-                        {renderRankingIndicator(keyword.classificationBefore, keyword.classificationAfter)}
-                      </TableCell>
-                      <TableCell>{keyword.goal}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </div>
-          
-          {/* Optimized Keywords - Ranking Benchmark Table */}
-          <div className="pt-4 border-t border-border animate-fade-in">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium">Optimized Keywords - Ranking Benchmark</h3>
-              <button
-                type="button"
-                onClick={() => copyToClipboard(JSON.stringify(sampleBenchmarks, null, 2), "Benchmark Data")}
-                className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors p-1 rounded focus-ring"
-                aria-label="Copy Benchmark Data"
-              >
-                <Copy className="h-4 w-4" />
-                Export Data
-              </button>
-            </div>
-            
-            <div className="overflow-x-auto">
-              <Table>
-                <TableCaption>Comparison of keyword rankings across competing apps</TableCaption>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead onClick={() => requestSort('keyword')} className="cursor-pointer hover:bg-muted transition-colors">
-                      <div className="flex items-center gap-1">
-                        Keyword
-                        <Tooltip>
-                          <TooltipTrigger><Info className="h-3.5 w-3.5 text-muted-foreground" /></TooltipTrigger>
-                          <TooltipContent>The target search term for comparison</TooltipContent>
-                        </Tooltip>
-                      </div>
-                    </TableHead>
-                    {competitors.map((competitor, index) => (
-                      <TableHead key={index} className="cursor-pointer hover:bg-muted transition-colors">
-                        <HoverCard>
-                          <HoverCardTrigger>
-                            <div className="flex items-center gap-1">
-                              {competitor}
-                              <Info className="h-3.5 w-3.5 text-muted-foreground" />
-                            </div>
-                          </HoverCardTrigger>
-                          <HoverCardContent>
-                            <div className="space-y-2">
-                              <h4 className="text-sm font-semibold">{competitor}</h4>
-                              <p className="text-xs text-muted-foreground">Ranking positions for this competitor. Lower numbers indicate better rankings.</p>
-                            </div>
-                          </HoverCardContent>
-                        </HoverCard>
-                      </TableHead>
-                    ))}
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {sortedBenchmarks.map((benchmark, index) => (
-                    <TableRow key={index} className={index % 2 === 0 ? 'bg-background' : 'bg-muted/20'}>
-                      <TableCell className="font-medium">{benchmark.keyword}</TableCell>
-                      <TableCell>{benchmark.competitor1}</TableCell>
-                      <TableCell>{benchmark.competitor2}</TableCell>
-                      <TableCell>{benchmark.competitor3}</TableCell>
-                      <TableCell>{benchmark.competitor4}</TableCell>
-                      <TableCell>{benchmark.competitor5}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </div>
+          {/* Keyword Tables - Only show if showKeywords is true */}
+          {showKeywords && (
+            <>
+              {/* Optimized Keywords Table */}
+              <div className="pt-4 border-t border-border animate-fade-in">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-medium">Optimized Keywords</h3>
+                  <button
+                    type="button"
+                    onClick={() => copyToClipboard(JSON.stringify(sampleKeywords, null, 2), "Keyword Data")}
+                    className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors p-1 rounded focus-ring"
+                    aria-label="Copy Keyword Data"
+                  >
+                    <Copy className="h-4 w-4" />
+                    Export Data
+                  </button>
+                </div>
+                
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableCaption>Analysis of keyword performance and optimization goals</TableCaption>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead onClick={() => requestSort('keyword')} className="cursor-pointer hover:bg-muted transition-colors">
+                          <div className="flex items-center gap-1">
+                            Keyword
+                            <Tooltip>
+                              <TooltipTrigger><Info className="h-3.5 w-3.5 text-muted-foreground" /></TooltipTrigger>
+                              <TooltipContent>The target search term for optimization</TooltipContent>
+                            </Tooltip>
+                          </div>
+                        </TableHead>
+                        <TableHead onClick={() => requestSort('density')} className="cursor-pointer hover:bg-muted transition-colors">
+                          <div className="flex items-center gap-1">
+                            Density
+                            <Tooltip>
+                              <TooltipTrigger><Info className="h-3.5 w-3.5 text-muted-foreground" /></TooltipTrigger>
+                              <TooltipContent>Frequency of keyword appearance in app metadata</TooltipContent>
+                            </Tooltip>
+                          </div>
+                        </TableHead>
+                        <TableHead onClick={() => requestSort('relevance')} className="cursor-pointer hover:bg-muted transition-colors">
+                          <div className="flex items-center gap-1">
+                            Relevance
+                            <Tooltip>
+                              <TooltipTrigger><Info className="h-3.5 w-3.5 text-muted-foreground" /></TooltipTrigger>
+                              <TooltipContent>Assessed importance to target audience</TooltipContent>
+                            </Tooltip>
+                          </div>
+                        </TableHead>
+                        <TableHead className="cursor-pointer hover:bg-muted transition-colors">
+                          <div className="flex items-center gap-1">
+                            Classification (Before)
+                            <Tooltip>
+                              <TooltipTrigger><Info className="h-3.5 w-3.5 text-muted-foreground" /></TooltipTrigger>
+                              <TooltipContent>Current ranking position</TooltipContent>
+                            </Tooltip>
+                          </div>
+                        </TableHead>
+                        <TableHead className="cursor-pointer hover:bg-muted transition-colors">
+                          <div className="flex items-center gap-1">
+                            Classification (After)
+                            <Tooltip>
+                              <TooltipTrigger><Info className="h-3.5 w-3.5 text-muted-foreground" /></TooltipTrigger>
+                              <TooltipContent>Projected ranking after optimization</TooltipContent>
+                            </Tooltip>
+                          </div>
+                        </TableHead>
+                        <TableHead onClick={() => requestSort('goal')} className="cursor-pointer hover:bg-muted transition-colors">
+                          <div className="flex items-center gap-1">
+                            Goal
+                            <Tooltip>
+                              <TooltipTrigger><Info className="h-3.5 w-3.5 text-muted-foreground" /></TooltipTrigger>
+                              <TooltipContent>Specific objective for this keyword</TooltipContent>
+                            </Tooltip>
+                          </div>
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {sortedKeywords.map((keyword, index) => (
+                        <TableRow key={index} className={index % 2 === 0 ? 'bg-background' : 'bg-muted/20'}>
+                          <TableCell className="font-medium">{keyword.keyword}</TableCell>
+                          <TableCell>{keyword.density}</TableCell>
+                          <TableCell>
+                            <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getRelevanceColor(keyword.relevance)}`}>
+                              {keyword.relevance}
+                            </span>
+                          </TableCell>
+                          <TableCell>{keyword.classificationBefore}</TableCell>
+                          <TableCell className="flex items-center gap-1">
+                            {keyword.classificationAfter}
+                            {renderRankingIndicator(keyword.classificationBefore, keyword.classificationAfter)}
+                          </TableCell>
+                          <TableCell>{keyword.goal}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+              
+              {/* Optimized Keywords - Ranking Benchmark Table */}
+              <div className="pt-4 border-t border-border animate-fade-in">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-medium">Optimized Keywords - Ranking Benchmark</h3>
+                  <button
+                    type="button"
+                    onClick={() => copyToClipboard(JSON.stringify(sampleBenchmarks, null, 2), "Benchmark Data")}
+                    className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors p-1 rounded focus-ring"
+                    aria-label="Copy Benchmark Data"
+                  >
+                    <Copy className="h-4 w-4" />
+                    Export Data
+                  </button>
+                </div>
+                
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableCaption>Comparison of keyword rankings across competing apps</TableCaption>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead onClick={() => requestSort('keyword')} className="cursor-pointer hover:bg-muted transition-colors">
+                          <div className="flex items-center gap-1">
+                            Keyword
+                            <Tooltip>
+                              <TooltipTrigger><Info className="h-3.5 w-3.5 text-muted-foreground" /></TooltipTrigger>
+                              <TooltipContent>The target search term for comparison</TooltipContent>
+                            </Tooltip>
+                          </div>
+                        </TableHead>
+                        {competitors.map((competitor, index) => (
+                          <TableHead key={index} className="cursor-pointer hover:bg-muted transition-colors">
+                            <HoverCard>
+                              <HoverCardTrigger>
+                                <div className="flex items-center gap-1">
+                                  {competitor}
+                                  <Info className="h-3.5 w-3.5 text-muted-foreground" />
+                                </div>
+                              </HoverCardTrigger>
+                              <HoverCardContent>
+                                <div className="space-y-2">
+                                  <h4 className="text-sm font-semibold">{competitor}</h4>
+                                  <p className="text-xs text-muted-foreground">Ranking positions for this competitor. Lower numbers indicate better rankings.</p>
+                                </div>
+                              </HoverCardContent>
+                            </HoverCard>
+                          </TableHead>
+                        ))}
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {sortedBenchmarks.map((benchmark, index) => (
+                        <TableRow key={index} className={index % 2 === 0 ? 'bg-background' : 'bg-muted/20'}>
+                          <TableCell className="font-medium">{benchmark.keyword}</TableCell>
+                          <TableCell>{benchmark.competitor1}</TableCell>
+                          <TableCell>{benchmark.competitor2}</TableCell>
+                          <TableCell>{benchmark.competitor3}</TableCell>
+                          <TableCell>{benchmark.competitor4}</TableCell>
+                          <TableCell>{benchmark.competitor5}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
