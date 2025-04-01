@@ -268,7 +268,7 @@ const InitialForm: React.FC<InitialFormProps> = ({ onSubmit, isSubmitting }) => 
               htmlFor="suggestKeywords" 
               className="text-sm font-medium cursor-pointer"
             >
-              Sugerir keywords para otimização
+              Create Keywords Suggestions
             </Label>
           </div>
 
