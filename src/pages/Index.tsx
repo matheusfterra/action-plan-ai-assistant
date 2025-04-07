@@ -39,6 +39,9 @@ const Index = () => {
   // Feedback iteration counter
   const [feedbackCount, setFeedbackCount] = useState(0);
   
+  // Add state for suggestKeywords
+  const [suggestKeywords, setSuggestKeywords] = useState(false);
+  
   // Scroll to top function
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -50,6 +53,9 @@ const Index = () => {
     try {
       // Log the form data to see new fields
       console.log("Form data submitted:", data);
+      
+      // Set suggestKeywords state based on form data
+      setSuggestKeywords(data.suggestKeywords);
       
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -211,6 +217,7 @@ const Index = () => {
             outputs={outputs} 
             isActive={initialSubmitted}
             showAfterAdditionalSubmit={additionalSubmitted}
+            showKeywords={suggestKeywords} // Pass the state to control keyword tables visibility
           />
           
           {(initialSubmitted && additionalSubmitted && !showFeedbackForm) && (
