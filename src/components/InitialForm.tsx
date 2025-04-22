@@ -21,6 +21,7 @@ export interface InitialFormData {
   actionArea: string;
   instructions: string;
   suggestKeywords: boolean;
+  applicationType: string;
 }
 
 const SUPPORTED_LANGUAGES = [
@@ -65,6 +66,13 @@ const OPTIMIZATION_OPTIONS = [
   "Keyword field"
 ];
 
+const APPLICATION_TYPES = [
+  "Direct Application",
+  "AB Test",
+  "ABC Test",
+  "ABCD Test"
+];
+
 const InitialForm: React.FC<InitialFormProps> = ({ onSubmit, isSubmitting }) => {
   const [formData, setFormData] = useState<InitialFormData>({
     appId: '',
@@ -74,7 +82,8 @@ const InitialForm: React.FC<InitialFormProps> = ({ onSubmit, isSubmitting }) => 
     appSection: '',
     actionArea: '',
     instructions: '',
-    suggestKeywords: false
+    suggestKeywords: false,
+    applicationType: 'Direct Application'
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -108,6 +117,10 @@ const InitialForm: React.FC<InitialFormProps> = ({ onSubmit, isSubmitting }) => 
     
     if (!formData.instructions.trim()) {
       newErrors.instructions = 'Instructions are required';
+    }
+    
+    if (!formData.applicationType) {
+      newErrors.applicationType = 'Application type is required';
     }
     
     setErrors(newErrors);
@@ -256,6 +269,25 @@ const InitialForm: React.FC<InitialFormProps> = ({ onSubmit, isSubmitting }) => 
               </Select>
               {errors.appSection && <p className="text-sm text-destructive">{errors.appSection}</p>}
             </div>
+          </div>
+
+          <div className="space-y-2 animate-fade-in">
+            <Label htmlFor="applicationType" className="text-sm font-medium">
+              Application Type
+            </Label>
+            <Select value={formData.applicationType} onValueChange={(value) => handleChange(value, 'applicationType')}>
+              <SelectTrigger id="applicationType" className={`h-11 focus-ring ${errors.applicationType ? 'border-destructive' : ''}`}>
+                <SelectValue placeholder="Select application type" />
+              </SelectTrigger>
+              <SelectContent>
+                {APPLICATION_TYPES.map((type) => (
+                  <SelectItem key={type.replace(/\s+/g, '-').toLowerCase()} value={type}>
+                    {type}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {errors.applicationType && <p className="text-sm text-destructive">{errors.applicationType}</p>}
           </div>
 
           <div className="flex items-center space-x-2 animate-fade-in">

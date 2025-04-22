@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Header from '@/components/Header';
 import InitialForm, { InitialFormData } from '@/components/InitialForm';
@@ -42,6 +43,9 @@ const Index = () => {
   // Add state for suggestKeywords
   const [suggestKeywords, setSuggestKeywords] = useState(false);
   
+  // Add state for applicationType
+  const [applicationType, setApplicationType] = useState("Direct Application");
+  
   // Scroll to top function
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -56,6 +60,9 @@ const Index = () => {
       
       // Set suggestKeywords state based on form data
       setSuggestKeywords(data.suggestKeywords);
+      
+      // Set applicationType state based on form data
+      setApplicationType(data.applicationType);
       
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -217,7 +224,8 @@ const Index = () => {
             outputs={outputs} 
             isActive={initialSubmitted}
             showAfterAdditionalSubmit={additionalSubmitted}
-            showKeywords={suggestKeywords} // Pass the state to control keyword tables visibility
+            showKeywords={suggestKeywords}
+            applicationType={applicationType}
           />
           
           {(initialSubmitted && additionalSubmitted && !showFeedbackForm) && (
