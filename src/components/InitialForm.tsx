@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -271,37 +270,45 @@ const InitialForm: React.FC<InitialFormProps> = ({ onSubmit, isSubmitting }) => 
             </div>
           </div>
 
-          <div className="space-y-2 animate-fade-in">
-            <Label htmlFor="applicationType" className="text-sm font-medium">
-              Application Type
-            </Label>
-            <Select value={formData.applicationType} onValueChange={(value) => handleChange(value, 'applicationType')}>
-              <SelectTrigger id="applicationType" className={`h-11 focus-ring ${errors.applicationType ? 'border-destructive' : ''}`}>
-                <SelectValue placeholder="Select application type" />
-              </SelectTrigger>
-              <SelectContent>
-                {APPLICATION_TYPES.map((type) => (
-                  <SelectItem key={type.replace(/\s+/g, '-').toLowerCase()} value={type}>
-                    {type}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {errors.applicationType && <p className="text-sm text-destructive">{errors.applicationType}</p>}
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2 animate-fade-in">
+              <Label htmlFor="applicationType" className="text-sm font-medium">
+                Application Type
+              </Label>
+              <Select 
+                value={formData.applicationType} 
+                onValueChange={(value) => handleChange(value, 'applicationType')}
+              >
+                <SelectTrigger 
+                  id="applicationType" 
+                  className={`h-11 focus-ring ${errors.applicationType ? 'border-destructive' : ''}`}
+                >
+                  <SelectValue placeholder="Select application type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {APPLICATION_TYPES.map((type) => (
+                    <SelectItem key={type.replace(/\s+/g, '-').toLowerCase()} value={type}>
+                      {type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors.applicationType && <p className="text-sm text-destructive">{errors.applicationType}</p>}
+            </div>
 
-          <div className="flex items-center space-x-2 animate-fade-in">
-            <Checkbox 
-              id="suggestKeywords" 
-              checked={formData.suggestKeywords} 
-              onCheckedChange={handleCheckboxChange} 
-            />
-            <Label 
-              htmlFor="suggestKeywords" 
-              className="text-sm font-medium cursor-pointer"
-            >
-              Create Keywords Suggestions
-            </Label>
+            <div className="flex items-center space-x-2 animate-fade-in self-end">
+              <Checkbox 
+                id="suggestKeywords" 
+                checked={formData.suggestKeywords} 
+                onCheckedChange={handleCheckboxChange} 
+              />
+              <Label 
+                htmlFor="suggestKeywords" 
+                className="text-sm font-medium cursor-pointer"
+              >
+                Create Keywords Suggestions
+              </Label>
+            </div>
           </div>
 
           <div className="space-y-2 animate-fade-in">
