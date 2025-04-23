@@ -66,10 +66,9 @@ const OPTIMIZATION_OPTIONS = [
 ];
 
 const APPLICATION_TYPES = [
-  "Direct Application",
-  "AB Test",
-  "ABC Test",
-  "ABCD Test"
+  "1",
+  "2",
+  "3"
 ];
 
 const InitialForm: React.FC<InitialFormProps> = ({ onSubmit, isSubmitting }) => {
@@ -82,7 +81,7 @@ const InitialForm: React.FC<InitialFormProps> = ({ onSubmit, isSubmitting }) => 
     actionArea: '',
     instructions: '',
     suggestKeywords: false,
-    applicationType: 'Direct Application'
+    applicationType: '1'
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -273,7 +272,7 @@ const InitialForm: React.FC<InitialFormProps> = ({ onSubmit, isSubmitting }) => 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2 animate-fade-in">
               <Label htmlFor="applicationType" className="text-sm font-medium">
-                Application Type
+                Total Variations
               </Label>
               <Select 
                 value={formData.applicationType} 
@@ -283,11 +282,11 @@ const InitialForm: React.FC<InitialFormProps> = ({ onSubmit, isSubmitting }) => 
                   id="applicationType" 
                   className={`h-11 focus-ring ${errors.applicationType ? 'border-destructive' : ''}`}
                 >
-                  <SelectValue placeholder="Select application type" />
+                  <SelectValue placeholder="Select number of variations" />
                 </SelectTrigger>
                 <SelectContent>
                   {APPLICATION_TYPES.map((type) => (
-                    <SelectItem key={type.replace(/\s+/g, '-').toLowerCase()} value={type}>
+                    <SelectItem key={type} value={type}>
                       {type}
                     </SelectItem>
                   ))}

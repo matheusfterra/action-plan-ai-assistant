@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,7 +13,6 @@ interface OutputItem {
   content: string;
 }
 
-// Added keyword data interfaces
 interface KeywordData {
   keyword: string;
   density: string | number;
@@ -45,7 +43,6 @@ interface OutputSectionProps {
   applicationType?: string;
 }
 
-// Sample data for the tables
 const sampleKeywords: KeywordData[] = [
   { keyword: "pedir empréstimo", density: "-", relevance: "Medium", classificationBefore: 110, classificationAfter: 95, goal: "Improve ranking" },
   { keyword: "pagamento", density: "-", relevance: "High", classificationBefore: "-", classificationAfter: "-", goal: "Describe your goal" },
@@ -64,38 +61,33 @@ const sampleBenchmarks: BenchmarkData[] = [
 
 const competitors = ["Uber: Ride App", "Lyft", "DiDi", "Bolt", "FreeNow"];
 
-// Function to generate variations for multiple suggestions
 const generateVariations = (applicationType: string, baseOutput: any) => {
-  if (applicationType === "Direct Application") {
+  if (applicationType === "1") {
     return null;
   }
   
   const variations = [];
-  const labels = ['A', 'B', 'C', 'D'];
-  const count = applicationType === "AB Test" ? 2 : 
-                applicationType === "ABC Test" ? 3 : 
-                applicationType === "ABCD Test" ? 4 : 1;
+  const count = parseInt(applicationType);
   
   for (let i = 0; i < count; i++) {
-    const label = labels[i];
+    const variationNumber = i + 1;
     
-    // Create different variations for each output type
     variations.push({
-      id: `variation-${label.toLowerCase()}`,
-      label: `Variation ${label}`,
+      id: `variation-${variationNumber}`,
+      label: `Variation ${variationNumber}`,
       output: {
-        suggestedText: `${baseOutput.suggestedText} (Variation ${label})`,
-        hypothesis: `${baseOutput.hypothesis} (Variation ${label})`,
-        strategy: `${baseOutput.strategy} (Variation ${label})`,
+        suggestedText: `${baseOutput.suggestedText} (Variation ${variationNumber})`,
+        hypothesis: `${baseOutput.hypothesis} (Variation ${variationNumber})`,
+        strategy: `${baseOutput.strategy} (Variation ${variationNumber})`,
       },
       keywords: sampleKeywords.map(kw => ({
         ...kw,
-        keyword: i % 2 === 0 ? kw.keyword : `${kw.keyword} ${label}`,
-        goal: `${kw.goal} (${label})`
+        keyword: `${kw.keyword} ${variationNumber}`,
+        goal: `${kw.goal} (${variationNumber})`
       })),
       benchmarks: sampleBenchmarks.map(bm => ({
         ...bm,
-        keyword: i % 2 === 0 ? bm.keyword : `${bm.keyword} ${label}`
+        keyword: `${bm.keyword} ${variationNumber}`
       }))
     });
   }
@@ -119,10 +111,8 @@ const OutputSection: React.FC<OutputSectionProps> = ({
 
   if (!isActive || !outputs || !showAfterAdditionalSubmit) return null;
   
-  // Generate variations based on application type
   const variations = generateVariations(applicationType, outputs);
   
-  // Determine whether to show multiple variations or a single output
   const hasMultipleVariations = variations && variations.length > 1;
 
   const renderOutputContent = (outputData: any, currentKeywords = sampleKeywords, currentBenchmarks = sampleBenchmarks) => {
@@ -164,14 +154,12 @@ const OutputSection: React.FC<OutputSectionProps> = ({
           </div>
         ))}
         
-        {/* Keyword Tables - Only show if showKeywords is true */}
         {showKeywords && renderKeywordTables(currentKeywords, currentBenchmarks)}
       </div>
     );
   };
 
   const renderKeywordTables = (currentKeywords = sampleKeywords, currentBenchmarks = sampleBenchmarks) => {
-    // Sort the keyword data
     const sortedKeywords = [...currentKeywords].sort((a: any, b: any) => {
       if (sortConfig.column === null) return 0;
       
@@ -184,7 +172,6 @@ const OutputSection: React.FC<OutputSectionProps> = ({
       return 0;
     });
 
-    // Sort the benchmark data
     const sortedBenchmarks = [...currentBenchmarks].sort((a: any, b: any) => {
       if (sortConfig.column === null) return 0;
       
@@ -199,7 +186,6 @@ const OutputSection: React.FC<OutputSectionProps> = ({
 
     return (
       <>
-        {/* Optimized Keywords Table */}
         <div className="pt-4 border-t border-border animate-fade-in">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-medium">Optimized Keywords</h3>
@@ -298,7 +284,6 @@ const OutputSection: React.FC<OutputSectionProps> = ({
           </div>
         </div>
         
-        {/* Optimized Keywords - Ranking Benchmark Table */}
         <div className="pt-4 border-t border-border animate-fade-in">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-medium">Optimized Keywords - Ranking Benchmark</h3>
@@ -401,7 +386,6 @@ const OutputSection: React.FC<OutputSectionProps> = ({
     return <Minus className="h-4 w-4 text-gray-400" />;
   };
 
-  // Sorting function for the tables
   const requestSort = (column: string) => {
     let direction: 'ascending' | 'descending' = 'ascending';
     
