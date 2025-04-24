@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Check, Edit, ThumbsUp, ThumbsDown, AlertCircle } from 'lucide-react';
@@ -13,6 +12,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "@/hooks/use-toast";
+import FeedbackRatingForm from './FeedbackRatingForm';
 
 interface ApprovalSectionProps {
   onApprove: () => void;
@@ -30,21 +30,19 @@ const ApprovalSection: React.FC<ApprovalSectionProps> = ({
   maxFeedbackCount
 }) => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
   
   if (!isActive) return null;
 
   const isLastFeedback = feedbackCount >= maxFeedbackCount;
 
   const handleCopyContent = () => {
-    // Get all the suggestion content to copy
     const suggestedText = document.querySelector('[data-section="suggestedText"]')?.textContent || '';
     const hypothesis = document.querySelector('[data-section="hypothesis"]')?.textContent || '';
     const strategy = document.querySelector('[data-section="strategy"]')?.textContent || '';
     
-    // Create a formatted string with all content
     const contentToCopy = `SUGESTÃO DE TEXTO:\n${suggestedText}\n\nHIPÓTESE:\n${hypothesis}\n\nESTRATÉGIA:\n${strategy}`;
     
-    // Copy to clipboard
     navigator.clipboard.writeText(contentToCopy)
       .then(() => {
         toast({
@@ -61,6 +59,33 @@ const ApprovalSection: React.FC<ApprovalSectionProps> = ({
         });
       });
   };
+
+  const handleApproveWithFeedback = () => {
+    setIsConfirmOpen(false);
+    setShowFeedback(true);
+  };
+
+  const finalHandleApprove = () => {
+    onApprove();
+    setShowFeedback(false);
+  };
+
+  if (showFeedback) {
+    return (
+      <div className="w-full space-y-6 animate-slide-in">
+        <FeedbackRatingForm />
+        <div className="flex justify-center">
+          <Button 
+            onClick={finalHandleApprove}
+            variant="outline"
+            className="mt-4"
+          >
+            Skip and Continue
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full mb-10 animate-slide-in">
@@ -127,7 +152,7 @@ const ApprovalSection: React.FC<ApprovalSectionProps> = ({
                 Fechar
               </AlertDialogCancel>
               <AlertDialogAction 
-                onClick={onApprove}
+                onClick={handleApproveWithFeedback}
                 className="bg-primary hover:bg-primary/90"
               >
                 Já copiei tudo, continuar
