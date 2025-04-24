@@ -17,6 +17,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
+interface FeedbackRatingFormProps {
+  onSubmitted: () => void;
+}
+
 const feedbackSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   rating: z.number().min(1).max(5),
@@ -25,7 +29,7 @@ const feedbackSchema = z.object({
 
 type FeedbackFormValues = z.infer<typeof feedbackSchema>;
 
-const FeedbackRatingForm = () => {
+const FeedbackRatingForm: React.FC<FeedbackRatingFormProps> = ({ onSubmitted }) => {
   const form = useForm<FeedbackFormValues>({
     resolver: zodResolver(feedbackSchema),
     defaultValues: {
@@ -42,6 +46,7 @@ const FeedbackRatingForm = () => {
         title: "Thank you for your feedback!",
         description: "Your response has been recorded successfully.",
       });
+      onSubmitted();
     } catch (error) {
       toast({
         title: "Error",
@@ -52,16 +57,9 @@ const FeedbackRatingForm = () => {
   };
 
   return (
-    <div className="w-full max-w-xl mx-auto p-6 space-y-6 bg-card rounded-lg border animate-fade-in">
-      <div className="text-center space-y-2">
-        <h3 className="text-lg font-semibold">Help Us Improve</h3>
-        <p className="text-sm text-muted-foreground">
-          Please rate your experience and share your thoughts
-        </p>
-      </div>
-
+    <div className="space-y-6">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
             name="email"
@@ -123,9 +121,18 @@ const FeedbackRatingForm = () => {
             )}
           />
 
-          <Button type="submit" className="w-full">
-            Submit Feedback
-          </Button>
+          <div className="flex justify-between pt-4">
+            <Button 
+              type="button" 
+              variant="outline"
+              onClick={onSubmitted}
+            >
+              Skip
+            </Button>
+            <Button type="submit">
+              Submit Feedback
+            </Button>
+          </div>
         </form>
       </Form>
     </div>

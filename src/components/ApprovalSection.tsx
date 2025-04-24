@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Check, Edit, ThumbsUp, ThumbsDown, AlertCircle } from 'lucide-react';
@@ -11,6 +12,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 import FeedbackRatingForm from './FeedbackRatingForm';
 
@@ -69,23 +77,6 @@ const ApprovalSection: React.FC<ApprovalSectionProps> = ({
     onApprove();
     setShowFeedback(false);
   };
-
-  if (showFeedback) {
-    return (
-      <div className="w-full space-y-6 animate-slide-in">
-        <FeedbackRatingForm />
-        <div className="flex justify-center">
-          <Button 
-            onClick={finalHandleApprove}
-            variant="outline"
-            className="mt-4"
-          >
-            Skip and Continue
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="w-full mb-10 animate-slide-in">
@@ -160,6 +151,18 @@ const ApprovalSection: React.FC<ApprovalSectionProps> = ({
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+
+        <Dialog open={showFeedback} onOpenChange={setShowFeedback}>
+          <DialogContent className="sm:max-w-xl">
+            <DialogHeader>
+              <DialogTitle>Your Feedback</DialogTitle>
+              <DialogDescription>
+                Help us improve by sharing your experience
+              </DialogDescription>
+            </DialogHeader>
+            <FeedbackRatingForm onSubmitted={finalHandleApprove} />
+          </DialogContent>
+        </Dialog>
       </div>
       {feedbackCount > 0 && (
         <div className="mt-4">
