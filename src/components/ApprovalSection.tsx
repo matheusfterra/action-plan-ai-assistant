@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Check, Edit, ThumbsUp, ThumbsDown, AlertCircle } from 'lucide-react';
@@ -155,9 +154,10 @@ const ApprovalSection: React.FC<ApprovalSectionProps> = ({
         <Dialog open={showFeedback} onOpenChange={setShowFeedback}>
           <DialogContent className="sm:max-w-xl">
             <DialogHeader>
-              <DialogTitle>Your Feedback</DialogTitle>
+              <DialogTitle>Avalie nossa solução</DialogTitle>
               <DialogDescription>
-                Help us improve by sharing your experience
+                Ajude-nos a melhorar! Avalie o quanto nosso MVP auxiliou na elaboração do seu plano de ação. 
+                Sua opinião é fundamental para aprimorarmos a ferramenta e torná-la mais útil.
               </DialogDescription>
             </DialogHeader>
             <FeedbackRatingForm onSubmitted={finalHandleApprove} />
